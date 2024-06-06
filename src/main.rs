@@ -2,15 +2,19 @@
 
 use std::net::SocketAddr;
 
-use axum::{extract::Query, response::{Html, IntoResponse}, routing::get, Router, Server};
+use axum::{
+    extract::{Path, Query},
+    response::{Html, IntoResponse},
+    routing::get,
+    Router, Server,
+};
 use serde::Deserialize;
 
 #[tokio::main]
 async fn main() {
-    let routes_hello = Router::new().route(
-        "/hello",
-        get(handler_hello),
-    );
+    let routes_hello = Router::new()
+        .route("/hello", get(handler_hello))
+        .route("/hello2/:name", get(handler_hello2));
 
     //Start serve
 
@@ -31,8 +35,12 @@ struct HelloParams {
 async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
     println!("-> {:<12} - handler_hello - {params:?}", "HANDLER");
 
-    let name = params.name.as_deref().unwrap_or("Carlito");
-    Html("Hello <strong>{name}</strong>")
+    let name = params.name.as_deref().unwrap_or("World");
+    Html(format!("Hello <strong>{name}</strong>"))
 }
 
+async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
+    println!("-> {:<12} - handler_hello - {name:?}", "HANDLER");
 
+    Html(format!("Hello <strong>{name}</strong>"))
+}
