@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+mod child;
 use anyhow::Result;
 //Lib for tests
 
