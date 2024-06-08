@@ -1,26 +1,37 @@
 #![allow(unused)]
+pub use self::error::{Error, Result};
 
 mod error;
 mod web;
 
-pub use self::error::{Error, Result};
 
-use std::net::SocketAddr;
+//use crate::ctx::Ctx;
+//use crate::log::log_request;
+//use crate::model::ModelController;
 
-use axum::{
-    extract::{Path, Query},
-    response::{Html, IntoResponse},
-    routing::{get, get_service, Route},
-    Router, Server,
-};
+use axum::extract::{Path, Query};
+use axum::http::{Method, Uri};
+use axum::response::{Html, IntoResponse, Response};
+use axum::routing::{get, get_service};
+use axum::{middleware, Json, Router};
 use serde::Deserialize;
+use serde_json::json;
+use std::net::SocketAddr;
+use tokio::net::TcpListener;
+use tower_cookies::CookieManagerLayer;
 use tower_http::services::ServeDir;
+//use uuid::Uuid;
 
 #[tokio::main]
 async fn main() {
     let routes_all = Router::new()
-    .merge(routes_hello())
-    .fallback_service(routes_static());
+        .merge(routes_hello())
+        .merge(web::routes_login::routes())
+        .layer(middleware::map_response(main_response_mapper))
+        .layer(CookieManagerLayer::new())
+        .fallback_service(routes_static());
+
+    //Layers are executed from bottom to top
 
     //Start server
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
@@ -30,6 +41,14 @@ async fn main() {
         .await
         .unwrap();
     //Finish server
+}
+
+async fn main_response_mapper(res: Response) -> Response {
+    println!("->> {:<12} - main_response_mapper", "RES_MAPPER");
+
+    println!();
+
+    res
 }
 
 fn routes_hello() -> Router {
