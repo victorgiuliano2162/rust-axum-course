@@ -13,7 +13,7 @@ impl Ctx {
     }
 }
 
-//Property acess
+//Property acessors
 impl Ctx {
     pub fn user_id(&self) -> u64 {
         self.user_id
