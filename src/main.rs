@@ -4,6 +4,7 @@ pub use self::error::{Error, Result};
 mod error;
 mod model;
 mod web;
+mod ctx;
 
 //use crate::ctx::Ctx;
 //use crate::log::log_request;
