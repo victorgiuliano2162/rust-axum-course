@@ -21,13 +21,17 @@ use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use tower_cookies::CookieManagerLayer;
 use tower_http::services::ServeDir;
-//use uuid::Uuid;
+//use uuid::Uuid;J
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result <()> {
+    //Initialize ModelController
+    let mc = ModelController::new().await?;
+
     let routes_all = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
+        .nest("/api", web::routes_tickets::routes(mc.clone()) )
         .layer(middleware::map_response(main_response_mapper))
         .layer(CookieManagerLayer::new())
         .fallback_service(routes_static());
@@ -42,6 +46,8 @@ async fn main() {
         .await
         .unwrap();
     //Finish server
+
+    Ok(())
 }
 
 async fn main_response_mapper(res: Response) -> Response {
