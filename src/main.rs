@@ -3,11 +3,12 @@ pub use self::error::{Error, Result};
 
 mod error;
 mod web;
+mod model;
 
 
 //use crate::ctx::Ctx;
 //use crate::log::log_request;
-//use crate::model::ModelController;
+use crate::model::ModelController;
 
 use axum::extract::{Path, Query};
 use axum::http::{Method, Uri};
@@ -67,14 +68,16 @@ struct HelloParams {
 }
 
 async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
+    //Trabalha com parâmetros e estes estão definidos no código, o que não é essencial
     println!("-> {:<12} - handler_hello - {params:?}", "HANDLER");
 
     let name = params.name.as_deref().unwrap_or("World");
-    Html(format!("Hello <strong>{name}</strong>"))
+    Html(format!("Hello, <strong>{name}</strong>"))
 }
 
 async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
+    //Recebe os dados via http/json
     println!("-> {:<12} - handler_hello - {name:?}", "HANDLER");
 
-    Html(format!("Hello <strong>{name}</strong>"))
+    Html(format!("Hello, <strong>{name}</strong>"))
 }
