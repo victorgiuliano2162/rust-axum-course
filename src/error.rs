@@ -1,6 +1,5 @@
-use axum::response::{IntoResponse, Response};
 use axum::http::StatusCode;
-
+use axum::response::{IntoResponse, Response};
 
 pub type Result<T> = core::result::Result<T, Error>;
 
@@ -9,9 +8,11 @@ pub enum Error {
     LoginFail,
 
     //Model erorrs
-    TicketDeleteFailIdNotFound {
-        id: u64,
-    }
+    TicketDeleteFailIdNotFound { id: u64 },
+
+    //Auto errors
+    AuthFailNoAuthTokenCookie,
+    AuthFailTokenWrongFormat,
 }
 
 // -- Error boilerplate
@@ -19,7 +20,7 @@ impl std::fmt::Display for Error {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> core::result::Result<(), std::fmt::Error> {
         write!(fmt, "{self:?}")
     }
-} 
+}
 
 impl std::error::Error for Error {}
 
