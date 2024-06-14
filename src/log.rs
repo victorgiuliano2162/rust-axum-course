@@ -1,20 +1,14 @@
-use std::{
-    alloc::System,
-    time::{SystemTime, UNIX_EPOCH},
-};
-
-use crate::{
-    ctx::{self, Ctx},
-    error::ClientError,
-    Error, Result,
-};
+use crate::ctx::Ctx;
+use crate::error::ClientError;
+use crate::{Error, Result};
 use axum::http::{Method, Uri};
 use serde::Serialize;
 use serde_json::{json, Value};
 use serde_with::skip_serializing_none;
+use std::time::{SystemTime, UNIX_EPOCH};
 use uuid::Uuid;
 
-pub async fn log_resquest(
+pub async fn log_request(
     uuid: Uuid,
     req_method: Method,
     uri: Uri,
@@ -48,7 +42,11 @@ pub async fn log_resquest(
         error_data
     };
 
-    todo!()
+    println!("->> log_request: \n{}", json!(log_line));
+
+    //Send to clound watch    
+
+    Ok(())
 }
 
 //Option::none does not get serialized although Option::Some(T) does it

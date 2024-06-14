@@ -1,9 +1,11 @@
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
+use serde::Serialize;
 
 pub type Result<T> = core::result::Result<T, Error>;
 
-#[derive(Clone, Debug, strum_macros::AsRefStr)]
+#[derive(Clone, Serialize, Debug, strum_macros::AsRefStr)]
+#[serde(tag = "type", content = "data")]
 pub enum Error {
     LoginFail,
 
@@ -23,16 +25,12 @@ impl Error {
     pub fn client_status_and_error(&self) -> (StatusCode, ClientError) {
         #[allow(unreachable_patterns)]
         match self {
-            Self::LoginFail => (
-                StatusCode::FORBIDDEN, ClientError::LOGIN_FAIL
-            ),
+            Self::LoginFail => (StatusCode::FORBIDDEN, ClientError::LOGIN_FAIL),
 
             //Auth
             Self::AuthFailNoAuthTokenCookie
             | Self::AuthFailTokenWrongFormat
-            | Self::AuthFailCtxNotInRequestExt => (
-                StatusCode::FORBIDDEN, ClientError::NO_AUTH
-            ),
+            | Self::AuthFailCtxNotInRequestExt => (StatusCode::FORBIDDEN, ClientError::NO_AUTH),
 
             //Model
             Self::TicketDeleteFailIdNotFound { .. } => {
@@ -72,15 +70,15 @@ impl IntoResponse for Error {
     fn into_response(self) -> Response {
         println!("-> {:<12} - {self:?}", "INTO_RES");
 
-       // (StatusCode::INTERNAL_SERVER_ERROR, "UNHANDLED_CLIENT_ERROR").into_response()
+        // (StatusCode::INTERNAL_SERVER_ERROR, "UNHANDLED_CLIENT_ERROR").into_response()
 
-       //Create a place holder Axum response
-       let mut response = StatusCode::INTERNAL_SERVER_ERROR.into_response();
+        //Create a place holder Axum response
+        let mut response = StatusCode::INTERNAL_SERVER_ERROR.into_response();
 
-       //Insert the error into the response
-       response.extensions_mut().insert(self);
+        //Insert the error into the response
+        response.extensions_mut().insert(self);
 
-       response
+        response
     }
     //Never pass your server error to your client
 }
