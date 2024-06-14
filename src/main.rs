@@ -76,7 +76,7 @@ async fn main_response_mapper(res: Response) -> Response {
                 "error": {
                     "type": client_error.as_ref(),
                     "req_uuid": uuid.to_string(),
-                }
+                } 
             });
             
             println!("->> client_error_body: {client_error_body}");
