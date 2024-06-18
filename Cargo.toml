@@ -3,6 +3,9 @@ name = "rust-axum-course"
 version = "0.1.0"
 edition = "2021"
 
+[workspace.lints.rust]
+unused = "allow"
+
 [dependencies]
 tokio ={ version="1", features = ["full"]}
 axum = { version = "0.6", features = ["macros"] }
@@ -15,7 +18,5 @@ async-trait = "0.1"
 uuid ={ version = "1", features = ["v4", "fast-rng",]}
 strum_macros = "0.24"
 serde_with = "2"
-
-[dev-dependencies]
 anyhow = "1"
 httpc-test = "0.1.1"
