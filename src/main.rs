@@ -6,6 +6,7 @@ mod error;
 mod model;
 mod web;
 mod log;
+mod quick_dev;
 
 //use crate::ctx::Ctx;
 //use crate::log::log_request;
