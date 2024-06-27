@@ -8,8 +8,6 @@ mod web;
 mod log;
 mod quick_dev;
 
-//use crate::ctx::Ctx;
-//use crate::log::log_request;
 use crate::model::ModelController;
 
 use axum::extract::{Path, Query};
